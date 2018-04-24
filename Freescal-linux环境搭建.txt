@@ -1,0 +1,22 @@
+
+编译错误：
+	没有规则可以创建kernel/bounds.s需要的目标kernel/bounds.c的基本解决方案
+	sudo apt-get install linux-source
+	sudo apt-get install glibc-source
+	
+编译找不到环境变量：
+	make: fsl-linaro-toolchain-master/bin/arm-fsl-linux-gnueabi-gcc: Command not found
+	sudo apt-get install lib32z1 lib32ncurses5 lib32bz2-1.0
+	问题地址：https://stackoverflow.com/questions/14180185/gcc-arm-linux-gnueabi-command-not-found
+	
+	
+部分错误处理：
+
+内核编译 make[2]: *** [arch/arm/boot/compressed/piggy.lzo.o] Error 1 
+解决方法： sudo apt-get install lzop
+
+
+Ubuntu下安装一个可用的QT5.5.1
+终端里面sudo apt-get install qt5-default qtcreator
+	
+	
