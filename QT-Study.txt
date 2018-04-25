@@ -1,0 +1,303 @@
+
+信号与slot:
+
+一、在 Qt 5 中，QObject::connect()有五个重载：
+
+QMetaObject::Connection connect(const QObject *, const char *,
+                                const QObject *, const char *,
+                                Qt::ConnectionType);
+ 
+ 第一个，sender 类型是const QObject *，signal 的类型是const char *，
+ receiver 类型是const QObject *，slot 类型是const char *。这个函数将 signal 和 slot 作为字符串处理。
+ 
+ 
+ 
+ 
+ 
+QMetaObject::Connection connect(const QObject *, const QMetaMethod &,
+                                const QObject *, const QMetaMethod &,
+                                Qt::ConnectionType);
+								
+ 第二个，sender 和 receiver 同样是const QObject *，但是 signal 和 slot 都是const QMetaMethod &。
+ 我们可以将每个函数看做是QMetaMethod的子类。因此，这种写法可以使用QMetaMethod进行类型比对。
+ 
+ 
+ 
+QMetaObject::Connection connect(const QObject *, const char *,
+                                const char *,
+                                Qt::ConnectionType) const;
+
+第三个，sender 同样是const QObject *，signal 和 slot 同样是const char *，但是却缺少了 receiver。
+这个函数其实是将 this 指针作为 receiver。
+
+
+
+	
+QMetaObject::Connection connect(const QObject *, PointerToMemberFunction,
+                                const QObject *, PointerToMemberFunction,
+                                Qt::ConnectionType)
+								
+第四个，sender 和 receiver 也都存在，都是const QObject *，但是 signal 和 slot 类型则是PointerToMemberFunction，
+看这个名字就应该知道，这是指向成员函数的指针。
+
+
+
+
+QMetaObject::Connection connect(const QObject *, PointerToMemberFunction,
+                                Functor);
+								
+第五个，前面两个参数没有什么不同，最后一个参数是Functor类型。这个类型可以接受 static 函数、全局函数以及 Lambda 表达式。					
+
+
+
+
+
+二、如果要编译带lambda表达式的代码，你需要在 pro 文件中添加这么一句：   QMAKE_CXXFLAGS += -std=c++0x
+
+三、这个类继承了QObject类。只有继承了QObject类的类，才具有信号槽的能力。所以，为了使用信号槽，必须继承QObject。凡是QObject类
+	（不管是直接子类还是间接子类），都应该在第一行代码写上Q_OBJECT。不管是不是使用信号槽，都应该添加这个宏。
+	这个宏的展开将为我们的类提供信号槽机制、国际化机制以及 Qt 提供的不基于 C++ RTTI 的反射能力。
+	因此，如果你觉得你的类不需要使用信号槽，就不添加这个宏，就是错误的
+
+
+四、如果信号是 private 的，这个信号就不能在类的外面连接，也就没有任何意义。
+
+
+五、注意我们的文本使用tr()函数，这是一个用于 Qt 国际化的函数。在后续章节中我们可以看到，我们可以使用 Qt 提供的国际化工具，将tr()函数的字符串提取出来，进行国际化。由于所需进行国际化的文本应该被大多数人认识，所以，tr()函数里面一般会是英文文本。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
