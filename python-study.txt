@@ -1,0 +1,6 @@
+
+二十三种设计模式及其python实现:
+https://www.cnblogs.com/Liqiongyu/p/5916710.html
+
+
+

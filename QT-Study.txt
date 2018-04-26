@@ -66,7 +66,13 @@ QMetaObject::Connection connect(const QObject *, PointerToMemberFunction,
 五、注意我们的文本使用tr()函数，这是一个用于 Qt 国际化的函数。在后续章节中我们可以看到，我们可以使用 Qt 提供的国际化工具，将tr()函数的字符串提取出来，进行国际化。由于所需进行国际化的文本应该被大多数人认识，所以，tr()函数里面一般会是英文文本。
 
 
+六、布局器能帮助界面产生相对布局：
+	QHBoxLayout *layout = new QHBoxLayout;
+    layout->addWidget(spinBox);
+    layout->addWidget(slider);
 
+
+七、	
 
 
 
