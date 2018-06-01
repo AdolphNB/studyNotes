@@ -19,4 +19,26 @@
 Ubuntu下安装一个可用的QT5.5.1
 终端里面sudo apt-get install qt5-default qtcreator
 	
+当你编译程序时， timeval.c:(.text+0x6f): undefined reference to `clock_gettime'
+则你只需要在你的Makefile文件里面添加    -lrt  ，重新编译即可
+	
+
+	
+
+交叉编译的应用程序无法执行，可以通过执行#file 文件名
+查看文件的相关信息及编译环境，如下。
+testCan:  ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.3,       for GNU/Linux 2.6.31, not stripped
+/mnt/uart ELF 32-bit LSB executable, ARM, EABI5 version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-armhf.so.3, for GNU/Linux 2.6.16, BuildID[sha1]=d763d46596c2afaa36ec8f888a78c08ce9f246c6, not stripped
+对比自己编译的程序与目标板的可执行程序，若库不一致，可以生成一定的软件链接。
+在目标板执行以下命令， 将库形成一个软链接：
+	ln -s ld-linux-armhf.so.3 ld-linux.so.3
+	
+	
+	
+g++ -std=c++11 main.cpp NMEA2000.cpp NMEA2000_SocketCAN.cpp N2kGroupFunction.cpp N2kMsg.cpp 
+N2kStream.cpp N2kGroupFunctionDefaultHandlers.cpp
+
+ ../bin/arm-fsl-linux-gnueabi-g++ -std=gnu++0x
+ -lrt main.cpp NMEA2000.cpp NMEA2000_SocketCAN.cpp N2kGroupFunction.cpp N2kMsg.cpp N2kStream.cpp 
+N2kGroupFunctionDefaultHandlers.cpp -o testCan	
 	

@@ -72,21 +72,44 @@ QMetaObject::Connection connect(const QObject *, PointerToMemberFunction,
     layout->addWidget(slider);
 
 
-七、	
+七、事件：keyPressEvent()、keyReleaseEvent()、mouseDoubleClickEvent()、
+mouseMoveEvent()、mousePressEvent()、mouseReleaseEvent()
 
 
+八、事件过滤器的强大之处在于，我们可以为整个应用程序添加一个事件过滤器。记得，installEventFilter()函数是QObject的函数，QApplication或者QCoreApplication对象都是QObject的子类，因此，我们可以向QApplication或者QCoreApplication添加事件过滤器。
+如果你在事件过滤器中 delete 了某个接收组件，务必将函数返回值设为 true。否则，Qt 还是会将事件分发给这个接收组件，从而导致程序崩溃。
+Qt 事件的调用最终都会追溯到QCoreApplication::notify()函数，因此，最大的控制权实际上是重写QCoreApplication::notify()。
 
 
+九、可以总结一下 Qt 的事件处理，实际上是有五个层次：
+1.重写paintEvent()、mousePressEvent()等事件处理函数。这是最普通、最简单的形式，同时功能也最简单。
+2.重写event()函数。event()函数是所有对象的事件入口，QObject和QWidget中的实现，默认是把事件传递给特定的事件处理函数。
+3.在特定对象上面安装事件过滤器。该过滤器仅过滤该对象接收到的事件。
+4.在QCoreApplication::instance()上面安装事件过滤器。该过滤器将过滤所有对象的所有事件，因此和notify()函数一样强大，但是它更灵活，因为可以安装多个过滤器。全局的事件过滤器可以看到 disabled 组件上面发出的鼠标事件。全局过滤器有一个问题：只能用在主线程。
+5.重写QCoreApplication::notify()函数。这是最强大的，和全局事件过滤器一样提供完全控制，并且不受线程的限制。但是全局范围内只能有一个被使用（因为QCoreApplication是单例的）。
+https://www.devbean.net/2012/10/qt-study-road-2-event-summary/
+全局事件过滤器被第一个调用，之后是该对象上面的事件过滤器，其次是event()函数，最后是特定的事件处理函数。
 
 
+十、可重入与线程安全：
+	对于一个类，如果不同的实例可以被不同线程同时使用而不受影响，就说这个类是可重入的；如果这个类的所有成员函数都可以被不同线程同时调用而不受影响，即使这些调用针对同一个对象，那么我们就说这个类是线程安全的。
+	事件总是由某一种类型的对象表示，针对某一个特殊的对象，而信号则没有这种目标对象。所有QObject的子类都可以通过覆盖QObject::event()函数来控制事件的对象。
+
+	事件可以由程序生成，也可以在程序外部生成。例如：
+	QKeyEvent和QMouseEvent对象表示键盘或鼠标的交互，通常由系统的窗口管理器产生；
+	QTimerEvent事件在定时器超时时发送给一个QObject，定时器事件通常由操作系统发出；
+	QChildEvent在增加或删除子对象时发送给一个QObject，这是由 Qt 应用程序自己发出的。
+	需要注意的是，与信号不同，事件并不是一产生就被分发。事件产生之后被加入到一个队列
 
 
+十一、轻量级的线程类：QRunnable是我们要介绍的第二个类。这是一个轻量级的抽象类，用于开始一个另外线程的任务。这种任务是运行过后就丢弃的。由于这个类是抽象类，我们需要继承QRunnable，然后重写其纯虚函数QRunnable::run()：
+	要真正运行一个QRunnable对象，我们需要 使用一个QThreadPool类。即：线程池。
+	QThreadPool::start(runnable)函数，我们将一个QRunnable对象放入QThreadPool的执行队列。
+	一旦有线程可用，线程池将会选择一QRunnable对象，然后开始执行，如果线程退出，则会直接丢弃这个对象
 
-
-
-
-
-
+十二、网络类相关的一般来说都是实现唯一的单个实例——QNetworkAccessManager()。在系统应用中
+	可以使用网络通信类与低层的服务连接，用来获取更新消息
+	NetWorker  是一个单例类，凡是单例类都有唯一的实例；
 
 
 
