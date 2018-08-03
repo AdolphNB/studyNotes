@@ -1,0 +1,60 @@
+class Outer
+{
+public:
+    Outer(){m_outerInt=0;}
+private:
+    int m_outerInt;
+public:
+    //内部类定义开始
+    class Inner
+    {
+    public:
+        Inner(){m_innerInt=1;}
+    private:
+        int m_innerInt;
+    public:
+        void DisplayIn(){cout<<m_innerInt<<endl;}
+    } ;
+    //End内部类
+public:
+    void DisplayOut(){cout<<m_outerInt<<endl;}
+};
+
+int main()
+{
+    Outer out;
+    Outer::Inner in;
+    out.DisplayOut();
+    in.DisplayIn();
+
+    return 0;
+}
+
+
+一个内部类的使用方法： 
+1.要实例化外部类(Outer out;)和内部类(Outer::Inner in;),
+2.从本质上讲，内部类只是使用了外部类的命名空间，外部类与内部类是相互独立的，不可直接使用；
+3.若只实例化了Inner,是不能调用Outer类中的方法，因为没有实例外部类的话，这部分代码就还只存储在代码段中，只有实例化之后才能在内存中生成一片内存空间，方可进行调用
+4.优点是对类进行嵌套通常是为了帮助实现另一个类，并避免名称上的冲突；
+
+也可以将class Inner()定义成友元类，
+
+
+
+
+
+嵌套类的声明位置决定了嵌套类的作用域，即它决定了程序的那部分可以创建嵌套类的对象。
+1.如果嵌套类声明在一个类的私有部分，则只有嵌套类的外部类可以知道它。上面的类就是这种情况。在queue这个类中，queue成员可以使用Node对象或Node对象的指针，但是程序的其他部分甚至不知道存在Node类。对于queue派生下来的类，也不知道Node的存在。
+2.如果嵌套类声明在一个类的保护部分，对于后者是可见的，对于外界是不可见的。派生类知道该嵌套类，并且可以直接创建这种类型的对象。
+3.如果嵌套类声明在一个类的公有部分，则允许后者，后者的派生类以及外部世界使用。然后在外部使用时，必须加上外部类的外部类作用域限制符。
+
+
+在外部类中声明嵌套类并没有赋予外部类任何对嵌套类的访问权限，也没有赋予任何嵌套类对于外部类的访问权限。与一般类的访问控制相同（私有，公有，保护）。
+
+
+
+
+
+
+
+
