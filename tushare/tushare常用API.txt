@@ -1,0 +1,83 @@
+1）index=True时，接口会自动匹配指数代码例如，要获取上证综指行情，调用方法为：ts.get_k_data('000001', index=True)
+目前支持567个指数行情
+2）index=True时，没有复权数据，即autype无效
+3）本接口的复权数据由数据源直接提供，区别于get_h_data是通过复权因子实时计算
+4）几种常见的调用方法1）获取浦发银行近一年半的前复权日线行情：ts.get_k_data('600000')
+2）获取浦发银行近6年后复权周线行情：ts.get_k_data('600000', ktype='W', autype='hfq')
+3）获取浦发银行近期5分钟行情：ts.get_k_data('600000', ktype='5')
+4）获取沪深300指数10月份日线行情：ts.get_k_data('399300', index=True,start='2016-10-01', end='2016-10-31')
+5）获取鹏华银行分级B的60分钟行情：ts.get_k_data('150228', ktype='60')
+
+
+
+ts.get_hist_data('600848', ktype='W') #获取周k线数据
+ts.get_hist_data('600848', ktype='M') #获取月k线数据
+ts.get_hist_data('600848', ktype='5') #获取5分钟k线数据
+ts.get_hist_data('600848', ktype='15') #获取15分钟k线数据
+ts.get_hist_data('600848', ktype='30') #获取30分钟k线数据
+ts.get_hist_data('600848', ktype='60') #获取60分钟k线数据
+ts.get_hist_data('sh'）#获取上证指数k线数据，其它参数与个股一致，下同
+ts.get_hist_data('sz'）#获取深圳成指k线数据
+ts.get_hist_data('hs300'）#获取沪深300指数k线数据
+ts.get_hist_data('sz50'）#获取上证50指数k线数据
+ts.get_hist_data('zxb'）#获取中小板指数k线数据
+ts.get_hist_data('cyb'）#获取创业板指数k线数据
+
+
+
+
+
+df = ts.get_sina_dd('002230', date='2018-08-30', vol=1000) #大单交易数据
+获取大单交易数据，默认为大于等于400手，数据来源于新浪财经。
+参数说明：
+code：股票代码，即6位数字代码
+date:日期，格式YYYY-MM-DD
+vol:手数，默认为400手，输入数值型参数
+retry_count : int, 默认3,如遇网络等问题重复执行的次数
+pause : int, 默认 0,重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
+返回值说明：
+code：代码
+name：名称
+time：时间
+price：当前价格
+volume：成交手
+preprice ：上一笔价格
+type：买卖类型【买盘、卖盘、中性盘】
+
+
+
+
+
+复权数据¶
+获取历史复权数据，分为前复权和后复权数据，接口提供股票上市以来所有历史数据，默认为前复权。
+如果不设定开始和结束日期，则返回近一年的复权数据，从性能上考虑，推荐设定开始日期和结束日期，
+而且最好不要超过三年以上，获取全部历史数据，请分年段分步获取，取到数据后，请及时在本地存储。
+获取个股首个上市日期，请参考以下方法：
+
+df = ts.get_stock_basics()
+date = df.ix['600848']['timeToMarket'] #上市日期YYYYMMDD
+本接口还提供大盘指数的全部历史数据，调用时，请务必设定index参数为True,由于大盘指数不存在复权的问题，故可以忽略autype参数。
+
+ts.get_h_data('002337') #前复权
+ts.get_h_data('002337', autype='hfq') #后复权
+ts.get_h_data('002337', autype=None) #不复权
+ts.get_h_data('002337', start='2015-01-01', end='2015-03-16') #两个日期之间的前复权数据
+ts.get_h_data('399106', index=True) #深圳综合指数
+
+参数说明：
+code:string,股票代码 e.g. 600848
+start:string,开始日期 format：YYYY-MM-DD 为空时取当前日期
+end:string,结束日期 format：YYYY-MM-DD 为空时取去年今日
+autype:string,复权类型，qfq-前复权 hfq-后复权 None-不复权，默认为qfq
+index:Boolean，是否是大盘指数，默认为False
+retry_count : int, 默认3,如遇网络等问题重复执行的次数
+pause : int, 默认 0,重复请求数据过程中暂停的秒数，防止请求间隔时间太短出现的问题
+
+返回值说明：
+date : 交易日期 (index)
+open : 开盘价
+high : 最高价
+close : 收盘价
+low : 最低价
+volume : 成交量
+amount : 成交金额
